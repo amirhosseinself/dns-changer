@@ -70,7 +70,7 @@ export default function DnsList() {
         {dnsList.map((dns) => (
           <div
             key={dns.id}
-            className="p-4 rounded-lg shadow bg-white dark:bg-gray-800 border dark:border-gray-700 flex justify-between items-center"
+            className="p-4 rounded-lg shadow bg-white dark:bg-gray-900 border dark:border-gray-700 flex justify-between items-center"
           >
             <div>
               <div className="font-bold text-lg text-gray-900 dark:text-gray-100">
