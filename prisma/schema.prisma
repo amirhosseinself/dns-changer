@@ -1,0 +1,104 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+
+model DnsRecord {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  label     String   // e.g. DNS - رادار
+  ip1       String
+  ip2       String
+  type      DnsType  // GOOGLE, IPV6, MOBILE, etc.
+  createdAt DateTime @default(now())
+}
+
+enum DnsType {
+  GENERAL
+  IPV6
+  GOOGLE
+  RADAR
+  SHEKAN
+  IRANCELL
+  HAMRAHAVAL
+  GAMING
+  TELECOM
+  OTHER
+}
+
+model User {
+  id             String          @id @default(auto()) @map("_id") @db.ObjectId
+  email          String?         @unique
+  password       String?
+  phoneNumber    String?         @unique @db.String
+  otpCodes       Otp[]
+  userName       String?         @unique
+  fullName       String?
+  profilePic     String?
+  bio            String?
+  accounts       Account[]
+  sessions       Session[]
+
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+}
+
+
+model Account {
+  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId            String   @db.ObjectId
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?  @db.String
+  access_token      String?  @db.String
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?  @db.String
+  session_state     String?
+  ipAddress         String?  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  sessionToken String   @unique
+  userId       String   @db.ObjectId
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model VerificationToken {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  identifier String
+  token      String
+  expires    DateTime
+  
+  @@unique([identifier, token])
+}
+
+model Otp {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId     String   @db.ObjectId
+  phoneNumber String  @db.String  // ✅ این فیلد را اضافه کنید
+  user       User     @relation(fields: [userId], references: [id])
+  code       String
+  sentAt     DateTime
+  expiresAt  DateTime
+  isVerified Boolean  @default(false)
+
+  @@index([phoneNumber]) // برای بهبود سرعت جستجو
+}
