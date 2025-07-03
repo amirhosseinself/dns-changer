@@ -30,6 +30,19 @@ enum DnsType {
   OTHER
 }
 
+model V2RayConfig {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId  String
+  server  String
+  port    Int
+  uuid    String
+  alterId Int
+  dns     String
+}
+
+
+// USER, ACCOUNT, SESSION, VERIFICATION TOKEN, OTP
+
 model User {
   id             String          @id @default(auto()) @map("_id") @db.ObjectId
   email          String?         @unique
