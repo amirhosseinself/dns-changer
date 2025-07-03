@@ -2,43 +2,37 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import axios from "axios";
 import toast from "react-hot-toast";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  getDnsRecords,
+  deleteDnsRecord,
+  updateDnsRecord,
+} from "@/services/api/dnsService";
+import { DnsRecord, DnsType } from "@prisma/client";
 
-interface DnsRecord {
-  id: string;
-  label: string;
-  ip1: string;
-  ip2: string;
-  type: string;
-}
-
-const types = [
-  "ALL",
-  "GENERAL",
-  "RADAR",
-  "SHEKAN",
-  "IRANCELL",
-  "HAMRAHAVAL",
-  "GAMING",
-  "TELECOM",
-  "OTHER",
-  "IPV6",
-  "GOOGLE",
-];
+const types = ["ALL", ...Object.values(DnsType)] as const;
 
 export default function DnsList() {
   const [dnsList, setDnsList] = useState<DnsRecord[]>([]);
   const [loading, setLoading] = useState(false);
   const [filter, setFilter] = useState("ALL");
+  const [currentDns, setCurrentDns] = useState<DnsRecord | null>(null);
 
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
-      const url = filter !== "ALL" ? `/api/dns?type=${filter}` : "/api/dns";
-      const res = await axios.get(url);
-      setDnsList(res.data);
-    } catch {
+      const records = await getDnsRecords(filter);
+      setDnsList(records);
+    } catch (error) {
+      console.error("Error fetching DNS records:", error);
       toast.error("خطا در دریافت داده‌ها");
     } finally {
       setLoading(false);
@@ -49,8 +43,34 @@ export default function DnsList() {
     fetchData();
   }, [fetchData]);
 
+  const handleEdit = (dns: DnsRecord) => {
+    setCurrentDns(dns);
+  };
+
+  const handleSave = async (updatedDns: DnsRecord) => {
+    try {
+      await updateDnsRecord(updatedDns);
+      toast.success("رکورد با موفقیت ویرایش شد");
+      fetchData();
+    } catch {
+      toast.error("خطا در ویرایش رکورد");
+    }
+  };
+
+  async function handleDelete(id: string) {
+    if (!confirm("آیا مطمئنی؟")) return;
+    try {
+      await deleteDnsRecord(id);
+      toast.success("رکورد حذف شد");
+      fetchData();
+    } catch {
+      toast.error("خطا در حذف رکورد");
+    }
+  }
+
   return (
     <div>
+      {/* Filter Buttons */}
       <div className="flex flex-wrap gap-2 mb-4">
         {types.map((t) => (
           <Button
@@ -64,8 +84,10 @@ export default function DnsList() {
         ))}
       </div>
 
+      {/* Loading Indicator */}
       {loading && <p className="text-center my-4">در حال بارگذاری...</p>}
 
+      {/* DNS Records */}
       <div className="space-y-4">
         {dnsList.map((dns) => (
           <div
@@ -83,25 +105,110 @@ export default function DnsList() {
                 {getTypeLabel(dns.type)}
               </div>
             </div>
-            <Button variant="destructive" onClick={() => handleDelete(dns.id)}>
-              حذف
-            </Button>
+
+            <div className="flex gap-2">
+              <Button
+                variant="destructive"
+                onClick={() => handleDelete(dns.id)}
+              >
+                حذف
+              </Button>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="outline" onClick={() => handleEdit(dns)}>
+                    ویرایش
+                  </Button>
+                </DialogTrigger>
+
+                {currentDns?.id === dns.id && (
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>ویرایش رکورد DNS</DialogTitle>
+                      <DialogDescription>
+                        اطلاعات رکورد DNS را ویرایش کنید.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <form
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        handleSave(currentDns);
+                      }}
+                      className="space-y-4"
+                    >
+                      <div>
+                        <label>برچسب</label>
+                        <input
+                          className="w-full border rounded px-2 py-1"
+                          type="text"
+                          value={currentDns.label}
+                          onChange={(e) =>
+                            setCurrentDns((prev) => ({
+                              ...prev!,
+                              label: e.target.value,
+                            }))
+                          }
+                        />
+                      </div>
+                      <div>
+                        <label>IP1</label>
+                        <input
+                          className="w-full border rounded px-2 py-1"
+                          type="text"
+                          value={currentDns.ip1}
+                          onChange={(e) =>
+                            setCurrentDns((prev) => ({
+                              ...prev!,
+                              ip1: e.target.value,
+                            }))
+                          }
+                        />
+                      </div>
+                      <div>
+                        <label>IP2</label>
+                        <input
+                          className="w-full border rounded px-2 py-1"
+                          type="text"
+                          value={currentDns.ip2}
+                          onChange={(e) =>
+                            setCurrentDns((prev) => ({
+                              ...prev!,
+                              ip2: e.target.value,
+                            }))
+                          }
+                        />
+                      </div>
+                      <div>
+                        <label>نوع</label>
+                        <select
+                          className="w-full border rounded px-2 py-1"
+                          value={currentDns.type}
+                          onChange={(e) =>
+                            setCurrentDns((prev) => ({
+                              ...prev!,
+                              type: e.target.value as DnsType, // 👈 fix here
+                            }))
+                          }
+                        >
+                          {types.map((type) => (
+                            <option key={type} value={type}>
+                              {getTypeLabel(type)}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                      <Button type="submit" className="w-full">
+                        ذخیره تغییرات
+                      </Button>
+                    </form>
+                  </DialogContent>
+                )}
+              </Dialog>
+            </div>
           </div>
         ))}
       </div>
     </div>
   );
-
-  async function handleDelete(id: string) {
-    if (!confirm("آیا مطمئنی؟")) return;
-    try {
-      await axios.delete(`/api/dns/${id}`);
-      toast.success("رکورد حذف شد");
-      fetchData();
-    } catch {
-      toast.error("خطا در حذف رکورد");
-    }
-  }
 }
 
 function getTypeLabel(type: string) {
