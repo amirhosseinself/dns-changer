@@ -41,6 +41,28 @@ model V2RayConfig {
 }
 
 
+model UserDnsRecord {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  ip1       String
+  ip2       String
+  type      DnsType  // GOOGLE, IPV6, MOBILE, etc.
+  createdAt DateTime @default(now())
+
+  UserDnsUsage UserDnsUsage? @relation("DnsToUserUsage")
+}
+
+model UserDnsUsage {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  userDnsId   String    @db.ObjectId @unique // شناسه DNS اختصاصی که کاربر استفاده کرده
+  internetTag String    // مانند ایرانسل، همراه اول، مخابرات
+  destination String    // جایی که DNS استفاده شده، مانند سرور بازی یا سرویس خاص
+  userIds     String[]  // آرایه‌ای از userId ها که از این DNS استفاده کرده‌اند
+  createdAt   DateTime  @default(now())
+
+  userDns     UserDnsRecord @relation("DnsToUserUsage", fields: [userDnsId], references: [id])
+}
+
+
 // USER, ACCOUNT, SESSION, VERIFICATION TOKEN, OTP
 
 model User {
