@@ -3,12 +3,9 @@ import { prisma } from "@/lib/prisma";
 import { successResponse, errorResponse } from "@/utils/apiResponses";
 
 // GET request: گرفتن اطلاعات کانفیگ v2ray برای یک کاربر بر اساس ID
-export const GET = async (
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) => {
+export const GET = async (req: NextRequest) => {
   try {
-    const { id } = params; // پارامتر id از مسیر URL
+    const id = req.nextUrl.pathname.split("/").pop(); // دریافت پارامتر id از URL
 
     if (!id) {
       return NextResponse.json(errorResponse([], "Missing ID", 3), {
