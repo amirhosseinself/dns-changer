@@ -60,11 +60,12 @@ export const GET = async (req: NextRequest) => {
   try {
     const { searchParams } = new URL(req.url);
     const type = searchParams.get("type");
-
     let where = undefined;
 
     if (type && Object.values(DnsType).includes(type as DnsType)) {
-      where = { type: type as DnsType }; // 🟡 فقط اگر معتبر بود، cast کن
+      where = { type: type as DnsType };
+    } else {
+      where = {};
     }
 
     const dnsList = await prisma.dnsRecord.findMany({
@@ -74,9 +75,7 @@ export const GET = async (req: NextRequest) => {
 
     return NextResponse.json(
       successResponse(dnsList, "DNS records fetched successfully."),
-      {
-        status: 200,
-      }
+      { status: 200 }
     );
   } catch (error) {
     console.error("[api/dns/list] Error:", error);
