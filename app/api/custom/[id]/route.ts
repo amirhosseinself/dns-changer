@@ -8,7 +8,7 @@ export const GET = async (
   { params }: { params: { id: string } }
 ) => {
   try {
-    const { id } = params;
+    const { id } = params; // پارامتر id از مسیر URL
 
     if (!id) {
       return NextResponse.json(errorResponse([], "Missing ID", 3), {
