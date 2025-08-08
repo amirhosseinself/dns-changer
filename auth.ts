@@ -25,6 +25,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
     },
     async jwt({ token, user }) {
       if (user) {
+        console.log("user in jwt callback", user);
         token.id = user.id;
         token.phoneNumber = user.phoneNumber;
         token.role = user.role; // افزودن نقش کاربر به توکن
