@@ -5,10 +5,10 @@ import { successResponse, errorResponse } from "@/utils/apiResponses";
 
 export const GET = async (
   req: NextRequest,
-  { params }: { params: { userDnsId: string } }
+  { params }: { params: Promise<{ userDnsId: string }> }
 ) => {
   try {
-    const { userDnsId } = params;
+    const { userDnsId } = await params;
 
     // دریافت اطلاعات اتصال DNS
     const usage = await prisma.userDnsUsage.findUnique({
