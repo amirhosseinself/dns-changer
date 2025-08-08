@@ -85,26 +85,33 @@ model UserDnsUsage {
 // USER, ACCOUNT, SESSION, VERIFICATION TOKEN, OTP
 
 model User {
-  id             String    @id @default(auto()) @map("_id") @db.ObjectId
-  email          String?   @unique
+  id             String      @id @default(auto()) @map("_id") @db.ObjectId
+  email          String?     @unique
   password       String?
-  phoneNumber    String?   @unique @db.String
+  phoneNumber    String?     @unique @db.String
   otpCodes       Otp[]
-  userName       String?   @unique
+  userName       String?     @unique
   fullName       String?
   profilePic     String?
   bio            String?
   accounts       Account[]
   sessions       Session[]
-  fcmTokens      FCMToken[] 
-  userReports    UserReport[] 
+  fcmTokens      FCMToken[]
+  userReports    UserReport[]
 
-  isGuest        Boolean   @default(true) // ✅ اضافه برای یوزرهای بدون ثبت‌نام
+  isGuest        Boolean     @default(true)
 
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
+  role           Role        @default(USER) // ✅ نقش کاربر
+
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
 }
 
+enum Role {
+  ADMIN
+  USER
+  GUEST
+}
 
 
 model Account {

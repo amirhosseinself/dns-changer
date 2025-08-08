@@ -1,16 +1,19 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import NextAuth, { DefaultSession } from "next-auth";
+import { Role } from "@prisma/client";
 
 declare module "next-auth" {
   interface Session {
     user: {
       id: string;
       phoneNumber: string;
+      role: Role;
     } & DefaultSession["user"];
   }
 
   interface User {
     phoneNumber: string;
+    role: Role;
   }
 }
 
@@ -18,5 +21,6 @@ declare module "next-auth" {
   interface JWT {
     id: string;
     phoneNumber: string;
+    role: Role;
   }
 }

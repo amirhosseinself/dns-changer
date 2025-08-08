@@ -33,6 +33,7 @@ export default {
         // **Ensure returning a full User object**
         return {
           id: user.id,
+          role: user.role || "GUEST", // Default role if not set
           phoneNumber: user.phoneNumber || "", // Ensure it's always a string
           email: user.email || null,
           userName: user.userName || null,
