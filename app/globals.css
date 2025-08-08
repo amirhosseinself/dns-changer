@@ -8,6 +8,10 @@
   }
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 /* استفاده از فونت CharismaTF برای تمامی تگ‌های تیتر (h1 تا h6) */
 h1,
 h2 {
