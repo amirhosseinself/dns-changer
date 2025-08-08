@@ -5,10 +5,10 @@ import { errorResponse, successResponse } from "@/utils/apiResponses";
 // ✅ fix: use official type from Next.js
 export const DELETE = async (
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) => {
   try {
-    const { id } = params;
+    const { id } = await params;
 
     const existingTag = await prisma.dnsTag.findUnique({ where: { id } });
 
@@ -35,10 +35,10 @@ export const DELETE = async (
 
 export const GET = async (
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) => {
   try {
-    const { id } = params;
+    const { id } = await params;
 
     const tag = await prisma.dnsTag.findUnique({ where: { id } });
 
