@@ -1,7 +1,7 @@
 // app/api/fcm/send/route.ts
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
-import admin from "@/lib/firebaseAdmin";
+import { admin } from "@/lib/firebaseAdmin";
 import { successResponse, errorResponse } from "@/utils/apiResponses";
 
 export const POST = async (req: NextRequest) => {
