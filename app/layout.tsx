@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { Toaster } from "react-hot-toast";
 import { ThemeProvider } from "next-themes";
-import Navbar from "@/components/navbar";
 
 import "./globals.css";
 
@@ -70,8 +69,6 @@ export default function RootLayout({
           enableSystem
           enableColorScheme
         >
-          <Navbar />
-
           {children}
           <Toaster
             position="top-center"

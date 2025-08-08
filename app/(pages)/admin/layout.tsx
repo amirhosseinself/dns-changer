@@ -1,5 +1,6 @@
 "use client";
 
+import Navbar from "@/components/navbar";
 import { SessionProvider } from "next-auth/react";
 import { useEffect, useState } from "react";
 
@@ -16,6 +17,7 @@ export default function PageLayout({
   if (!isClient) return null;
   return (
     <SessionProvider>
+      <Navbar />
       <div>{children}</div>
     </SessionProvider>
   );
