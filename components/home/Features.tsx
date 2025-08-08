@@ -40,7 +40,7 @@ export default function Features() {
         transition={{ duration: 0.5 }}
         className="text-2xl font-bold text-white mb-8"
       >
-        چرا Fire DNS؟
+        چرا Fire DNS ؟
       </motion.h3>
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -52,9 +52,9 @@ export default function Features() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.08, duration: 0.45 }}
-              className="bg-white/3 p-6 rounded-2xl border border-white/6 backdrop-blur-sm"
+              className="bg-white/5 backdrop-blur-sm p-6 rounded-lg border border-white/10 hover:bg-white/10 hover:scale-[1.02] transition-all duration-300"
             >
-              <div className="inline-flex items-center justify-center w-12 h-12 rounded-lg bg-white/6">
+              <div className="inline-flex items-center justify-center w-12 h-12 rounded-lg bg-black/25">
                 <Icon className="w-6 h-6 text-red-400" />
               </div>
 

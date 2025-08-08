@@ -3,6 +3,7 @@
 
 import { motion } from "framer-motion";
 import { Smartphone, Monitor } from "lucide-react";
+import Link from "next/link";
 
 /**
  * Hero section for Fire DNS landing page.
@@ -33,21 +34,21 @@ export default function Hero() {
           </p>
 
           <div className="mt-8 flex flex-wrap gap-4">
-            <a
+            <Link
               href="#download"
               className="inline-flex items-center gap-3 px-5 py-3 rounded-full bg-gradient-to-r from-red-500 to-orange-500 text-black font-semibold shadow-lg hover:scale-[1.02] transition-transform"
             >
               <Smartphone className="w-5 h-5" />
               دانلود اندروید
-            </a>
+            </Link>
 
-            <a
+            <Link
               href="#download"
               className="inline-flex items-center gap-3 px-5 py-3 rounded-full border border-gray-700 text-white hover:bg-white/5 transition"
             >
               <Monitor className="w-5 h-5" />
               دانلود ویندوز
-            </a>
+            </Link>
           </div>
 
           <div className="mt-6 text-sm text-gray-500">
