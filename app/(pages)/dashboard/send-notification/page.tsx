@@ -1,17 +1,50 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { toast } from "react-hot-toast";
 import axios from "axios";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Skeleton } from "@/components/ui/skeleton";
+
+interface User {
+  id: string;
+  name: string;
+  email: string;
+}
 
 const SendNotificationPage = () => {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [userId, setUserId] = useState("");
   const [loading, setLoading] = useState(false);
+  const [users, setUsers] = useState<User[]>([]);
+  const [usersLoading, setUsersLoading] = useState(true);
+
+  // Fetch users from API
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const { data } = await axios.get("/api/admin/users");
+        setUsers(data);
+      } catch (error) {
+        toast.error("خطا در دریافت لیست کاربران");
+        console.error("Error fetching users:", error);
+      } finally {
+        setUsersLoading(false);
+      }
+    };
+
+    fetchUsers();
+  }, []);
 
   const handleSend = async () => {
     if (!title || !body || !userId) {
@@ -43,11 +76,29 @@ const SendNotificationPage = () => {
     <div className="container max-w-2xl pt-16 space-y-6">
       <h1 className="text-2xl font-semibold">ارسال نوتیفیکیشن</h1>
 
-      <Input
-        placeholder="آیدی کاربر (userId)"
-        value={userId}
-        onChange={(e) => setUserId(e.target.value)}
-      />
+      {/* Select User */}
+      {usersLoading ? (
+        <Skeleton className="h-10 w-full rounded-md" />
+      ) : (
+        <Select value={userId} onValueChange={(value) => setUserId(value)}>
+          <SelectTrigger>
+            <SelectValue placeholder="انتخاب کاربر" />
+          </SelectTrigger>
+          <SelectContent>
+            {users.length === 0 ? (
+              <div className="text-sm text-muted-foreground px-4 py-2">
+                هیچ کاربری یافت نشد
+              </div>
+            ) : (
+              users.map((user) => (
+                <SelectItem key={user.id} value={user.id}>
+                  {user.name || user.email}
+                </SelectItem>
+              ))
+            )}
+          </SelectContent>
+        </Select>
+      )}
 
       <Input
         placeholder="عنوان نوتیفیکیشن"
