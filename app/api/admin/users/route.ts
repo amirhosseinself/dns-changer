@@ -10,12 +10,12 @@ export async function GET(req: Request) {
   // OPTIONAL: check if user is admin
   const session = await auth();
   if (!session || session.user.role !== "ADMIN") {
+    console.log("Unauthorized: ", session);
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 
   const users = await prisma.user.findMany({
     where: {
-      isGuest: false,
       OR: [
         { fullName: { contains: search, mode: "insensitive" } },
         { email: { contains: search, mode: "insensitive" } },
