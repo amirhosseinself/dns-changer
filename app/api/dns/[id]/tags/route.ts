@@ -8,10 +8,10 @@ import { successResponse, errorResponse } from "@/utils/apiResponses";
  */
 export const GET = async (
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) => {
   try {
-    const { id: dnsRecordId } = params;
+    const { id: dnsRecordId } = await params;
 
     // بررسی وجود DNS
     const dnsRecord = await prisma.dnsRecord.findUnique({
@@ -49,10 +49,10 @@ export const GET = async (
  */
 export const PUT = async (
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) => {
   try {
-    const { id: dnsRecordId } = params;
+    const { id: dnsRecordId } = await params;
     const body = await req.json();
     const { tagIds } = body;
 
@@ -118,10 +118,10 @@ export const PUT = async (
  */
 export const PATCH = async (
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) => {
   try {
-    const { id: dnsRecordId } = params;
+    const { id: dnsRecordId } = await params;
     const body = await req.json();
     const { addTagIds = [], removeTagIds = [] } = body;
 
@@ -210,10 +210,10 @@ export const PATCH = async (
  */
 export const DELETE = async (
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) => {
   try {
-    const { id: dnsRecordId } = params;
+    const { id: dnsRecordId } = await params;
 
     const dnsRecord = await prisma.dnsRecord.findUnique({
       where: { id: dnsRecordId },
