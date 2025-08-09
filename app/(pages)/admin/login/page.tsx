@@ -67,7 +67,7 @@ const Login = () => {
           setError(errorMessages);
         }
       } else {
-        router.push("/dashboard");
+        router.push("/admin/dashboard");
       }
     } catch (error) {
       setLoading(false);
