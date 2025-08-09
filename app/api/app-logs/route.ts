@@ -1,13 +1,19 @@
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { successResponse, errorResponse } from "@/utils/apiResponses";
+import { auth } from "@/auth"; // Import auth to get session
 
 export const POST = async (req: NextRequest) => {
   try {
+    const session = await auth();
+
+    // If user is not logged in, still allow null userId
+    const authenticatedUserId = session?.user?.id || null;
+
     const body = await req.json();
     console.log("[api/app-logs] Request Body:", body);
 
-    const { userId, deviceId, logType, message, metadata } = body;
+    const { deviceId, logType, message, metadata } = body;
 
     // Basic validation
     if (!logType || !message) {
@@ -28,7 +34,7 @@ export const POST = async (req: NextRequest) => {
     // Save log in DB
     const log = await prisma.appLog.create({
       data: {
-        userId: userId || null,
+        userId: authenticatedUserId, // from session
         deviceId: deviceId || null,
         logType,
         message,
