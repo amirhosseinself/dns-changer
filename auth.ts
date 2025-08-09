@@ -43,7 +43,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
     },
   },
   pages: {
-    signIn: "/login", // مسیر صفحه لاگین
+    signIn: "/admin/login", // مسیر صفحه لاگین
   },
   ...authConfig,
 });
