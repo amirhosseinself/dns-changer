@@ -5,9 +5,9 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 const navbarData = [
-  { title: "داشبورد", href: "/dashboard" },
-  { title: "ارسال نوتیفیکیشن", href: "/dashboard/send-notification" },
-  { title: "تنظیمات", href: "/dashboard/settings" },
+  { title: "داشبورد", href: "/admin/dashboard" },
+  { title: "ارسال نوتیفیکیشن", href: "/admin/dashboard/send-notification" },
+  { title: "تنظیمات", href: "/admin/dashboard/settings" },
 ];
 
 const Navbar = () => {
