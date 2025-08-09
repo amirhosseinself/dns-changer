@@ -1,4 +1,3 @@
-// app/api/dns-usage/route.ts
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { successResponse, errorResponse } from "@/utils/apiResponses";
@@ -8,60 +7,37 @@ export const POST = async (req: NextRequest) => {
     const body = await req.json();
     console.log("[api/dns-usage/POST] Body:", body);
 
-    const { userDnsId, internetTag, destination, userId } = body;
+    const { fcm_token, dns, timestamp, connection_type, network_info } = body;
 
-    // 🟢 اعتبارسنجی
-    if (!userDnsId || !internetTag || !destination || !userId) {
+    // 🟢 Validation
+    if (
+      !fcm_token ||
+      !dns?.label ||
+      !dns?.ip1 ||
+      !timestamp ||
+      !connection_type
+    ) {
       return NextResponse.json(
-        errorResponse(
-          [],
-          "All fields are required: userDnsId, internetTag, destination, userId",
-          3
-        ),
+        errorResponse([], "Missing required fields.", 3),
         { status: 400 }
       );
     }
 
-    // بررسی وجود DNS کاربر
-    const userDns = await prisma.userDnsRecord.findUnique({
-      where: { id: userDnsId },
+    // 🟢 Save to DB
+    const newConnection = await prisma.userDnsConnection.create({
+      data: {
+        fcmToken: fcm_token,
+        dnsLabel: dns.label,
+        dnsIp1: dns.ip1,
+        dnsIp2: dns.ip2 || null,
+        timestamp: new Date(timestamp),
+        connectionState: connection_type,
+        networkInfo: network_info || {},
+      },
     });
-    if (!userDns) {
-      return NextResponse.json(
-        errorResponse([], "User DNS record not found.", 4),
-        { status: 404 }
-      );
-    }
-
-    // بررسی اینکه usage وجود دارد یا نه
-    let usage = await prisma.userDnsUsage.findUnique({
-      where: { userDnsId },
-    });
-
-    if (usage) {
-      // اگر وجود دارد، userId جدید رو اضافه کن اگر قبلاً اضافه نشده باشد
-      if (!usage.userIds.includes(userId)) {
-        usage = await prisma.userDnsUsage.update({
-          where: { userDnsId },
-          data: {
-            userIds: { push: userId },
-          },
-        });
-      }
-    } else {
-      // اگر وجود ندارد، رکورد جدید بساز
-      usage = await prisma.userDnsUsage.create({
-        data: {
-          userDnsId,
-          internetTag,
-          destination,
-          userIds: [userId],
-        },
-      });
-    }
 
     return NextResponse.json(
-      successResponse(usage, "User DNS usage recorded successfully."),
+      successResponse(newConnection, "DNS connection logged successfully."),
       { status: 201 }
     );
   } catch (error) {
@@ -73,36 +49,26 @@ export const POST = async (req: NextRequest) => {
   }
 };
 
-// admin
-
-// app/api/dns-usage/route.ts
-// 🔹 این فایل همزمان GET و POST را مدیریت می‌کند
-
 export const GET = async (req: NextRequest) => {
   try {
     const { searchParams } = new URL(req.url);
-    const internetTag = searchParams.get("internetTag");
+    const state = searchParams.get("state"); // connected / disconnected
 
-    // فیلتر اختیاری براساس اینترنت‌تگ
-    const where = internetTag ? { internetTag } : {};
+    const where = state ? { connectionState: state } : {};
 
-    const usages = await prisma.userDnsUsage.findMany({
+    const connections = await prisma.userDnsConnection.findMany({
       where,
-      orderBy: { createdAt: "desc" },
+      orderBy: { timestamp: "desc" },
     });
 
     return NextResponse.json(
-      successResponse(usages, "DNS usage report fetched successfully."),
+      successResponse(connections, "DNS connection logs fetched successfully."),
       { status: 200 }
     );
   } catch (error) {
     console.error("[api/dns-usage/GET] Error:", error);
     return NextResponse.json(
-      errorResponse(
-        [],
-        "Internal server error while fetching usage report.",
-        10
-      ),
+      errorResponse([], "Internal server error while fetching DNS logs.", 10),
       { status: 500 }
     );
   }

@@ -199,3 +199,18 @@ model AppLog {
   metadata  Json?    // جزئیات اضافی
   createdAt DateTime @default(now())
 }
+
+model UserDnsConnection {
+  id              String    @id @default(auto()) @map("_id") @db.ObjectId
+  userId          String?   @db.ObjectId
+  fcmToken        String?
+  dnsLabel        String
+  dnsIp1          String
+  dnsIp2          String?
+  timestamp       DateTime
+  connectionState String    // connected | disconnected
+
+  networkInfo     Json      // { connection_type, carrier_name, ip_address, mobile_network_type }
+  
+  createdAt       DateTime  @default(now())
+}
