@@ -19,7 +19,7 @@ model DnsRecord {
   id        String    @id @default(auto()) @map("_id") @db.ObjectId
   label     String
   ip1       String
-  ip2       String
+  ip2       String?
   type      DnsType
   createdAt DateTime  @default(now())
   tags      DnsTagOnDnsRecord[]
@@ -63,7 +63,7 @@ model V2RayConfig {
 model UserDnsRecord {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   ip1       String
-  ip2       String
+  ip2       String?
   type      DnsType  // GOOGLE, IPV6, MOBILE, etc.
   createdAt DateTime @default(now())
 
