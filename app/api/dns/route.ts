@@ -1,72 +1,56 @@
+// src/app/api/dns/route.ts
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
-import { DnsType } from "@prisma/client"; // 🟡 Import enum type
-import { successResponse, errorResponse } from "@/utils/apiResponses"; // 🟡 Import response helper functions
+import { DnsType } from "@prisma/client";
+import { successResponse, errorResponse } from "@/utils/apiResponses";
+import { DnsSchema } from "@/validations/dns.schema"; // Import your schema
+import { formatZodErrors } from "@/utils/formatZodErrors";
 
-// POST request: Add new DNS record
 export const POST = async (req: NextRequest) => {
   try {
-    const body = await req.json();
-    console.log("[api/dns/add] Request Body:", body);
+    const json = await req.json();
 
-    const { label, ip1, ip2, type } = body;
-
-    // اعتبارسنجی ورودی‌ها
-    if (!label || !ip1 || !type) {
+    // ✅ Validate request body with Zod schema
+    const parsed = DnsSchema.safeParse(json);
+    if (!parsed.success) {
       return NextResponse.json(
-        errorResponse([], "Label, IP1, and Type are required.", 3),
+        errorResponse(
+          formatZodErrors(parsed.error as unknown as import("zod").ZodError),
+          "Validation failed",
+          3
+        ),
         { status: 400 }
       );
     }
 
-    // تبدیل نوع ورودی به نوع معتبر DnsType
-    if (!Object.values(DnsType).includes(type as DnsType)) {
-      return NextResponse.json(errorResponse([], "Invalid DNS Type.", 1), {
-        status: 400,
-      });
-    }
+    const { label, ip1, ip2, type } = parsed.data;
 
-    // ایجاد رکورد جدید DNS در پایگاه داده
+    // ✅ Create DNS record
     const newDns = await prisma.dnsRecord.create({
-      data: {
-        label,
-        ip1,
-        ip2,
-        type: type as DnsType, // 🟡 Cast to enum type
-      },
+      data: { label, ip1, ip2, type: type as DnsType },
     });
 
     return NextResponse.json(
       successResponse(newDns, "DNS record added successfully."),
-      {
-        status: 201,
-      }
+      { status: 201 }
     );
   } catch (error) {
     console.error("[api/dns/add] Error:", error);
-    return NextResponse.json(
-      errorResponse(
-        [],
-        "Internal server error occurred while adding DNS record.",
-        10
-      ),
-      { status: 500 }
-    );
+    return NextResponse.json(errorResponse([], "Internal server error.", 10), {
+      status: 500,
+    });
   }
 };
 
-// GET request: Get DNS records
 export const GET = async (req: NextRequest) => {
   try {
     const { searchParams } = new URL(req.url);
     const type = searchParams.get("type");
-    let where = undefined;
 
-    if (type && Object.values(DnsType).includes(type as DnsType)) {
-      where = { type: type as DnsType };
-    } else {
-      where = {};
-    }
+    const where =
+      type && Object.values(DnsType).includes(type as DnsType)
+        ? { type: type as DnsType }
+        : {};
 
     const dnsList = await prisma.dnsRecord.findMany({
       where,
@@ -79,13 +63,8 @@ export const GET = async (req: NextRequest) => {
     );
   } catch (error) {
     console.error("[api/dns/list] Error:", error);
-    return NextResponse.json(
-      errorResponse(
-        [],
-        "Internal server error occurred while fetching DNS records.",
-        10
-      ),
-      { status: 500 }
-    );
+    return NextResponse.json(errorResponse([], "Internal server error.", 10), {
+      status: 500,
+    });
   }
 };
