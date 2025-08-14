@@ -1,20 +1,19 @@
-import * as z from "zod/v4";
-import "zod-openapi"; // فعال‌سازی تایپ‌ها برای .meta()
-import { createSchema } from "zod-openapi";
+// src/validations/dns.schema.ts
+import { z } from "zod";
 import { DnsType } from "@prisma/client";
 
-export const DnsSchema = z
-  .object({
-    label: z
-      .string()
-      .min(1)
-      .meta({ description: "Label for DNS record", example: "Google DNS" }),
-    ip1: z.string().min(1).meta({ example: "8.8.8.8" }),
-    ip2: z.string().optional().meta({ example: "8.8.4.4" }),
-    type: z.enum(DnsType).meta({ description: "Type of DNS", example: "IPV4" }),
-  })
-  .meta({ id: "CreateDns", description: "Create DNS record input" });
+// Body Schema
+export const DnsSchema = z.object({
+  label: z.string().trim().min(1),
+  ip1: z.string().trim().ip().min(1),
+  ip2: z.string().ip().optional(),
+  type: z.nativeEnum(DnsType),
+});
 
-export const { schema, components } = createSchema(DnsSchema);
+// Query Schema
+export const DnsQuerySchema = z.object({
+  type: z.nativeEnum(DnsType).optional(),
+});
 
 export type CreateDnsInput = z.infer<typeof DnsSchema>;
+export type DnsQueryInput = z.infer<typeof DnsQuerySchema>;
