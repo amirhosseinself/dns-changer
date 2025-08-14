@@ -8,7 +8,7 @@ import authConfig from "@/auth.config";
 
 declare module "@auth/core/adapters" {
   interface AdapterUser {
-    phoneNumber: string;
+    email: string;
     role: Role; // Define roles as needed
   }
 }
@@ -27,7 +27,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       if (user) {
         console.log("user in jwt callback", user);
         token.id = user.id;
-        token.phoneNumber = user.phoneNumber;
+        token.email = user.email;
         token.role = user.role; // افزودن نقش کاربر به توکن
       }
       return token;
@@ -36,7 +36,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       // افزودن اطلاعات توکن به سشن کاربر
       if (token && session.user) {
         session.user.id = token.id as string;
-        session.user.phoneNumber = token.phoneNumber as string;
+        session.user.email = token.email as string;
         session.user.role = token.role as Role; // افزودن نقش کاربر به سشن
       }
       return session;

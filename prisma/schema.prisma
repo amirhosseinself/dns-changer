@@ -86,10 +86,8 @@ model UserDnsUsage {
 
 model User {
   id             String      @id @default(auto()) @map("_id") @db.ObjectId
-  email          String?     @unique
-  password       String?
-  phoneNumber    String?     @unique @db.String
-  otpCodes       Otp[]
+  email          String      @unique                // Email is required for login
+  password       String                              // Hashed password
   userName       String?     @unique
   fullName       String?
   profilePic     String?
@@ -99,9 +97,9 @@ model User {
   fcmTokens      FCMToken[]
   userReports    UserReport[]
 
-  isGuest        Boolean     @default(true)
+  isGuest        Boolean     @default(true)         // Guests won't have email/password
 
-  role           Role        @default(USER) // ✅ نقش کاربر
+  role           Role        @default(USER)          // Default role is USER
 
   createdAt      DateTime    @default(now())
   updatedAt      DateTime    @updatedAt
@@ -156,18 +154,18 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-model Otp {
-  id         String   @id @default(auto()) @map("_id") @db.ObjectId
-  userId     String   @db.ObjectId
-  phoneNumber String  @db.String  // ✅ این فیلد را اضافه کنید
-  user       User     @relation(fields: [userId], references: [id])
-  code       String
-  sentAt     DateTime
-  expiresAt  DateTime
-  isVerified Boolean  @default(false)
+// model Otp {
+//   id         String   @id @default(auto()) @map("_id") @db.ObjectId
+//   userId     String   @db.ObjectId
+//   phoneNumber String  @db.String  // ✅ این فیلد را اضافه کنید
+//   user       User     @relation(fields: [userId], references: [id])
+//   code       String
+//   sentAt     DateTime
+//   expiresAt  DateTime
+//   isVerified Boolean  @default(false)
 
-  @@index([phoneNumber]) // برای بهبود سرعت جستجو
-}
+//   @@index([phoneNumber]) // برای بهبود سرعت جستجو
+// }
 
 model FCMToken {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId

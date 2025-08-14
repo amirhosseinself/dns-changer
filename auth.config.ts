@@ -1,47 +1,56 @@
 import Credentials from "next-auth/providers/credentials";
 import type { NextAuthConfig } from "next-auth";
-
-import { validateOtpAndLogin } from "@/services/auth/validateOtpAndLogin";
+import { prisma } from "@/lib/prisma"; // ✅ Make sure you have this Prisma client
+import bcrypt from "bcryptjs";
 
 export default {
   providers: [
     Credentials({
-      name: "OTP",
+      name: "Email and Password",
       credentials: {
-        phoneNumber: { label: "Phone Number", type: "text" },
-        otpCode: { label: "OTP", type: "text" },
+        email: { label: "Email", type: "text" },
+        password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        const { phoneNumber, otpCode } = credentials as {
-          phoneNumber: string;
-          otpCode: string;
+        const { email, password } = credentials as {
+          email: string;
+          password: string;
         };
 
-        if (!phoneNumber || !otpCode) {
-          console.log("[auth.config.ts] Phone number or OTP code is missing.");
+        // ✅ Basic validation
+        if (!email || !password) {
+          console.log("[auth.config.ts] Email or password is missing.");
           return null;
         }
 
-        // Validate OTP from the database
-        const user = await validateOtpAndLogin(phoneNumber, otpCode);
+        // ✅ Find user by email
+        const user = await prisma.user.findUnique({
+          where: { email },
+        });
 
-        if (!user) {
-          console.log("[auth.config.ts] Invalid or expired OTP code.");
+        if (!user || !user.password) {
+          console.log("[auth.config.ts] User not found or has no password.");
           return null;
         }
 
-        // **Ensure returning a full User object**
+        // ✅ Compare hashed password
+        const isValid = await bcrypt.compare(password, user.password);
+        if (!isValid) {
+          console.log("[auth.config.ts] Invalid password.");
+          return null;
+        }
+
+        // ✅ Return user object for session
         return {
           id: user.id,
-          role: user.role || "GUEST", // Default role if not set
-          phoneNumber: user.phoneNumber || "", // Ensure it's always a string
-          email: user.email || null,
+          role: user.role || "USER",
+          email: user.email,
           userName: user.userName || null,
           fullName: user.fullName || null,
           profilePic: user.profilePic || null,
           bio: user.bio || null,
-          createdAt: user.createdAt || new Date().toISOString(),
-          updatedAt: user.updatedAt || new Date().toISOString(),
+          createdAt: user.createdAt.toISOString(),
+          updatedAt: user.updatedAt.toISOString(),
         };
       },
     }),
