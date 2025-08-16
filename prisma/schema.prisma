@@ -86,8 +86,8 @@ model UserDnsUsage {
 
 model User {
   id             String      @id @default(auto()) @map("_id") @db.ObjectId
-  email          String      @unique                // Email is required for login
-  password       String                              // Hashed password
+  email          String?     @unique // Optional for guests
+  password       String?     // Optional for guests
   userName       String?     @unique
   fullName       String?
   profilePic     String?
@@ -96,11 +96,8 @@ model User {
   sessions       Session[]
   fcmTokens      FCMToken[]
   userReports    UserReport[]
-
-  isGuest        Boolean     @default(true)         // Guests won't have email/password
-
-  role           Role        @default(USER)          // Default role is USER
-
+  isGuest        Boolean     @default(true)
+  role           Role        @default(USER)
   createdAt      DateTime    @default(now())
   updatedAt      DateTime    @updatedAt
 }
