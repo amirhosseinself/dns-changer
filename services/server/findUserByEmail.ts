@@ -1,15 +1,13 @@
 import { prisma } from "@/lib/prisma";
 import { User } from "@prisma/client";
 
-export const findUserByPhoneNumber = async (
-  phoneNumber: string
-): Promise<User | null> => {
-  if (!phoneNumber) {
+export const findUserByEmail = async (email: string): Promise<User | null> => {
+  if (!email) {
     throw new Error("Phone number is required");
   }
 
   const user = await prisma.user.findUnique({
-    where: { phoneNumber },
+    where: { email },
   });
 
   return user || null;
