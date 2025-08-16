@@ -66,11 +66,13 @@ export default {
         const randomID = randomUUID();
         const email = `guest_${randomID}@example.com`;
         const fullName = `Guest User ${randomID}`;
+        const userName = `guest_${randomID}`;
 
         const guest = await prisma.user.create({
           data: {
             isGuest: true,
             email,
+            userName,
             fullName,
             role: "GUEST",
           },
