@@ -165,17 +165,31 @@ export default function DnsList() {
                       </div>
                       <div>
                         <label>IP2</label>
-                        <input
-                          className="w-full border rounded px-2 py-1"
-                          type="text"
-                          value={currentDns.ip2}
-                          onChange={(e) =>
-                            setCurrentDns((prev) => ({
-                              ...prev!,
-                              ip2: e.target.value,
-                            }))
-                          }
-                        />
+                        {currentDns.ip2 ? (
+                          <input
+                            className="w-full border rounded px-2 py-1"
+                            type="text"
+                            value={currentDns.ip2}
+                            onChange={(e) =>
+                              setCurrentDns((prev) => ({
+                                ...prev!,
+                                ip2: e.target.value,
+                              }))
+                            }
+                          />
+                        ) : (
+                          <input
+                            className="w-full border rounded px-2 py-1"
+                            type="text"
+                            value={currentDns.ip2 || ""}
+                            onChange={(e) =>
+                              setCurrentDns((prev) => ({
+                                ...prev!,
+                                ip2: e.target.value,
+                              }))
+                            }
+                          />
+                        )}
                       </div>
                       <div>
                         <label>نوع</label>
