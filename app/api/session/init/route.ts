@@ -1,42 +1,53 @@
 import { NextResponse } from "next/server";
-import { encode } from "next-auth/jwt"; // ✅ ساخت JWT دستی
-import { Role } from "@prisma/client";
+import { signIn } from "@/auth";
+import { successResponse, errorResponse } from "@/utils/apiResponses";
+import { encode } from "next-auth/jwt";
+
+interface GuestUser {
+  id: string;
+  email: string;
+  role: string;
+}
 
 export const POST = async () => {
   try {
-    // 1️⃣ شبیه‌سازی ورود کاربر مهمان
-    const guestUser = {
-      id: crypto.randomUUID(), // شناسه یکتا
-      email: `guest_${Date.now()}@example.com`, // ایمیل فیک
-      role: "GUEST" as Role,
-    };
+    // 1️⃣ اجرای provider "guest"
+    const result = (await signIn("guest", {
+      redirect: false,
+    })) as GuestUser | null;
 
-    // 2️⃣ ساخت JWT با سیستم داخلی Auth.js
-    const token = await encode({
+    if (!result) {
+      return NextResponse.json(errorResponse([], "Guest login failed", 1), {
+        status: 400,
+      });
+    }
+
+    // 2️⃣ ساخت JWT
+    const jwt = await encode({
       token: {
-        id: guestUser.id,
-        email: guestUser.email,
-        role: guestUser.role,
+        id: result.id,
+        email: result.email,
+        role: result.role,
       },
-      secret: process.env.AUTH_SECRET!, // باید همونی باشه که توی auth.ts هست
-      salt: "authjs.session-token", // مقدار ثابت برای سازگاری با Auth.js
+      secret: process.env.AUTH_SECRET!,
+      salt: "authjs.session-token",
     });
 
-    // 3️⃣ برگردوندن JWT و اطلاعات کاربر
+    // 3️⃣ برگردوندن داده‌ها
     return NextResponse.json(
-      {
-        success: true,
-        message: "Guest session initialized",
-        jwt: token,
-        user: guestUser,
-      },
+      successResponse(
+        {
+          jwt,
+          user: result,
+        },
+        "Guest session initialized"
+      ),
       { status: 200 }
     );
   } catch (error) {
     console.error("[api/session/init] Error:", error);
-    return NextResponse.json(
-      { success: false, message: "Internal server error" },
-      { status: 500 }
-    );
+    return NextResponse.json(errorResponse([], "Internal server error", 10), {
+      status: 500,
+    });
   }
 };
