@@ -1,7 +1,9 @@
 import Credentials from "next-auth/providers/credentials";
 import type { NextAuthConfig } from "next-auth";
-import { prisma } from "@/lib/prisma"; // ✅ Make sure you have this Prisma client
 import bcrypt from "bcryptjs";
+import { randomUUID } from "crypto";
+
+import { prisma } from "@/lib/prisma"; // ✅ Make sure you have this Prisma client
 
 export default {
   providers: [
@@ -61,9 +63,15 @@ export default {
       credentials: {},
       async authorize() {
         // Create guest user in DB
+        const randomID = randomUUID();
+        const email = `guest_${randomID}@example.com`;
+        const fullName = `Guest User ${randomID}`;
+
         const guest = await prisma.user.create({
           data: {
             isGuest: true,
+            email,
+            fullName,
             role: "GUEST",
           },
         });
