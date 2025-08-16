@@ -54,5 +54,32 @@ export default {
         };
       },
     }),
+    // ✅ Login as Guest
+    Credentials({
+      id: "guest",
+      name: "Guest Login",
+      credentials: {},
+      async authorize() {
+        // Create guest user in DB
+        const guest = await prisma.user.create({
+          data: {
+            isGuest: true,
+            role: "GUEST",
+          },
+        });
+
+        return {
+          id: guest.id,
+          role: guest.role,
+          email: guest.email || "",
+          userName: guest.userName || null,
+          fullName: guest.fullName || null,
+          profilePic: guest.profilePic || null,
+          bio: guest.bio || null,
+          createdAt: guest.createdAt.toISOString(),
+          updatedAt: guest.updatedAt.toISOString(),
+        };
+      },
+    }),
   ],
 } satisfies NextAuthConfig;
