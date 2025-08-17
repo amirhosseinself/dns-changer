@@ -19,14 +19,12 @@ export async function GET(req: Request) {
       OR: [
         { fullName: { contains: search, mode: "insensitive" } },
         { email: { contains: search, mode: "insensitive" } },
-        { userName: { contains: search, mode: "insensitive" } },
       ],
     },
     select: {
       id: true,
       fullName: true,
       email: true,
-      userName: true,
       profilePic: true,
     },
     take: 20, // limit for performance
