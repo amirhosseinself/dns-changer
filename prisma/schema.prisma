@@ -80,10 +80,8 @@ model User {
   id             String      @id @default(auto()) @map("_id") @db.ObjectId
   email          String     @unique // Optional for guests
   password       String?     // Optional for guests
-  userName       String?     @unique
   fullName       String?
   profilePic     String?
-  bio            String?
   accounts       Account[]
   sessions       Session[]
   fcmTokens      FCMToken[]
