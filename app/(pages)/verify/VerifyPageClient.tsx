@@ -72,7 +72,7 @@ export default function VerifyPageClient() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-tr from-purple-900 via-indigo-900 to-black px-4">
-      <div className="max-w-md w-full text-center p-10 bg-gradient-to-br from-gray-800 via-gray-900 to-black rounded-3xl shadow-2xl border border-gray-700">
+      <div className="max-w-md w-full text-center p-10 bg-gradient-to-br from-gray-800/50 via-gray-900/50 to-black/50 rounded-3xl shadow-2xl border border-gray-700">
         <AnimatePresence mode="wait">
           <motion.div
             key={status}
