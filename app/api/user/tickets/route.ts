@@ -47,12 +47,12 @@ export const POST = async (req: NextRequest) => {
     }
 
     const body = await req.json();
-    const { title, message } = body;
+    const { subject, type, message } = body;
 
     // Validate required fields
-    if (!title || !message) {
+    if (!subject || !message || !type) {
       return NextResponse.json(
-        errorResponse([], "title and message are required.", 400),
+        errorResponse([], "subject and message and type are required.", 400),
         { status: 400 }
       );
     }
@@ -60,8 +60,9 @@ export const POST = async (req: NextRequest) => {
     // Create ticket
     const newTicket = await prisma.userReport.create({
       data: {
-        title,
+        subject,
         message,
+        type,
         userId: session.user.id,
       },
     });

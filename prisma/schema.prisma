@@ -167,8 +167,9 @@ model FCMToken {
 model UserReport {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   userId    String   @db.ObjectId
-  title     String
+  subject   String
   message   String
+  type      String   // "bug" | "suggestion" 
   status    String   @default("open") // open | in_progress | closed
   createdAt DateTime @default(now())
 
