@@ -108,7 +108,6 @@ enum Role {
   GUEST
 }
 
-
 model Account {
   id                String   @id @default(auto()) @map("_id") @db.ObjectId
   userId            String   @db.ObjectId
@@ -208,4 +207,15 @@ model UserDnsConnection {
   networkInfo     Json      // { connection_type, carrier_name, ip_address, mobile_network_type }
   
   createdAt       DateTime  @default(now())
+}
+
+model UpdateInfo {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  latestVersion  String
+  updateUrl      String
+  description    String
+  features       String[] // Prisma supports string[] with PostgreSQL & MongoDB
+  changes        String[]
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 }
