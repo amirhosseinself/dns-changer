@@ -1,12 +1,14 @@
-import { prisma } from "@/lib/prisma";
+// app/api/auth/register/route.ts
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 import { NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
 
 export async function POST(req: Request) {
   try {
-    const { email, password, userName, fullName } = await req.json();
+    const { email, password, fullName } = await req.json();
 
-    // ✅ Validate input
+    // ✅ Basic validation
     if (!email || !password) {
       return NextResponse.json(
         { error: "Email and password are required" },
@@ -14,7 +16,7 @@ export async function POST(req: Request) {
       );
     }
 
-    // ✅ Check if user exists
+    // ✅ Check if email already exists
     const existingUser = await prisma.user.findUnique({ where: { email } });
     if (existingUser) {
       return NextResponse.json(
@@ -31,20 +33,26 @@ export async function POST(req: Request) {
       data: {
         email,
         password: hashedPassword,
-        userName,
         fullName,
-        role: "USER",
-        isGuest: false,
+        role: "USER", // Enum value
+        isGuest: false, // ⚡ important!
       },
     });
 
+    // ✅ Create JWT for mobile
+    const token = jwt.sign(
+      { id: newUser.id, email: newUser.email, role: newUser.role },
+      process.env.JWT_SECRET as string,
+      { expiresIn: "7d" }
+    );
+
     return NextResponse.json({
       message: "User registered successfully",
+      token,
       user: {
         id: newUser.id,
         email: newUser.email,
         role: newUser.role,
-        userName: newUser.userName,
         fullName: newUser.fullName,
       },
     });

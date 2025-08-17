@@ -54,10 +54,8 @@ export async function POST(req: Request) {
         id: user.id,
         email: user.email,
         role: user.role,
-        userName: user.userName,
         fullName: user.fullName,
         profilePic: user.profilePic,
-        bio: user.bio,
       },
     });
   } catch (error) {
