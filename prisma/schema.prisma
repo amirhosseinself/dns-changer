@@ -37,16 +37,8 @@ model DnsTagOnDnsRecord {
 }
 
 enum DnsType {
-  GENERAL
-  IPV6
-  GOOGLE
-  RADAR
-  SHEKAN
-  IRANCELL
-  HAMRAHAVAL
-  GAMING
-  TELECOM
-  OTHER
+  IPv4
+  IPv6
 }
 
 model V2RayConfig {
