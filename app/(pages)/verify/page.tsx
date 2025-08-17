@@ -35,9 +35,9 @@ export default function VerifyPage() {
           setStatus("success");
           setMessage("ایمیل شما با موفقیت تایید شد! 🎉");
 
-          // هدایت به صفحه ورود بعد از 3 ثانیه
+          // هدایت به اپ موبایل بعد از 3 ثانیه
           setTimeout(() => {
-            window.location.href = "/login";
+            window.location.href = "myapp://fire-dns";
           }, 3000);
         }
       })
@@ -51,11 +51,11 @@ export default function VerifyPage() {
   const getMessageColor = () => {
     switch (status) {
       case "success":
-        return "text-green-500";
+        return "text-green-400";
       case "error":
-        return "text-red-500";
+        return "text-red-400";
       default:
-        return "text-gray-500";
+        return "text-gray-300";
     }
   };
 
@@ -63,18 +63,18 @@ export default function VerifyPage() {
     switch (status) {
       case "success":
         return (
-          <CheckCircle className="w-16 h-16 text-green-500 mb-4 mx-auto" />
+          <CheckCircle className="w-16 h-16 text-green-400 mb-4 mx-auto" />
         );
       case "error":
-        return <XCircle className="w-16 h-16 text-red-500 mb-4 mx-auto" />;
+        return <XCircle className="w-16 h-16 text-red-400 mb-4 mx-auto" />;
       default:
         return null;
     }
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-tr from-purple-500 via-pink-500 to-red-400 px-4">
-      <div className="max-w-md w-full text-center p-10 bg-white dark:bg-gray-800 rounded-3xl shadow-2xl border border-white/30">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-tr from-purple-900 via-indigo-900 to-black px-4">
+      <div className="max-w-md w-full text-center p-10 bg-gradient-to-br from-gray-800 via-gray-900 to-black rounded-3xl shadow-2xl border border-gray-700">
         <AnimatePresence mode="wait">
           <motion.div
             key={status}
@@ -89,15 +89,15 @@ export default function VerifyPage() {
             </p>
 
             {status === "success" && (
-              <p className="mt-4 text-gray-500 text-sm">
-                شما به زودی به صفحه ورود هدایت خواهید شد.
+              <p className="mt-4 text-gray-400 text-sm">
+                در حال انتقال به اپلیکیشن شما...
               </p>
             )}
 
             {status === "error" && (
               <button
                 onClick={() => window.location.reload()}
-                className="mt-6 px-6 py-2 bg-red-500 text-white rounded-full shadow hover:bg-red-600 transition"
+                className="mt-6 px-6 py-2 bg-red-600 text-white rounded-full shadow hover:bg-red-700 transition"
               >
                 تلاش مجدد
               </button>
