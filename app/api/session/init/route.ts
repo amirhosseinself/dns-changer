@@ -8,10 +8,8 @@ interface GuestUser {
   id: string;
   email: string;
   role: string;
-  userName: string | null;
   fullName: string | null;
   profilePic: string | null;
-  bio: string | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -20,14 +18,12 @@ interface GuestUser {
 async function createGuestUser(): Promise<GuestUser> {
   const randomID = randomUUID();
   const email = `guest_${randomID}@example.com`;
-  const userName = `guest_${randomID}`;
   const fullName = `Guest User ${randomID}`;
 
   const guest = await prisma.user.create({
     data: {
       isGuest: true,
       email,
-      userName,
       fullName,
       role: "GUEST",
     },
@@ -37,10 +33,8 @@ async function createGuestUser(): Promise<GuestUser> {
     id: guest.id,
     role: guest.role,
     email: guest.email,
-    userName: guest.userName,
     fullName: guest.fullName,
     profilePic: guest.profilePic,
-    bio: guest.bio,
     createdAt: guest.createdAt.toISOString(),
     updatedAt: guest.updatedAt.toISOString(),
   };

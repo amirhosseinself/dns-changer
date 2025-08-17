@@ -5,7 +5,6 @@ export interface User {
   password?: string;
   phoneNumber?: string;
   otpCodes: Otp[];
-  userName?: string;
   fullName?: string;
   profilePic?: string;
   bio?: string;

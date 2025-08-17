@@ -15,10 +15,8 @@ declare module "next-auth" {
     id?: string;
     role: Role;
     email?: string | null;
-    userName?: string | null;
     fullName?: string | null;
     profilePic?: string | null;
-    bio?: string | null;
     createdAt: string;
     updatedAt: string;
   }

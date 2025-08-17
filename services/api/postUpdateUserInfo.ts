@@ -6,7 +6,6 @@ import type { SuccessResponse, ErrorResponse } from "@/types/api";
 export interface UpdatedUser {
   id: string;
   phoneNumber: string;
-  userName: string | null;
   fullName: string | null;
   profilePic: string | null;
   bio: string | null;
@@ -16,7 +15,6 @@ export interface UpdatedUser {
 
 interface postUpdateUserInfoProps {
   updatingData: {
-    userName: string;
     fullName: string;
     bio: string;
   };
@@ -32,8 +30,6 @@ const postUpdateUserInfo = async ({
   try {
     const { data, status } = await apiClient.put(url, {
       fullName: updatingData.fullName,
-      userName: updatingData.userName,
-      bio: updatingData.bio,
     });
     console.log("[postUpdateUserInfo] Response:", data, status);
 

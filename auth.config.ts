@@ -47,10 +47,8 @@ export default {
           id: user.id,
           role: user.role || "USER",
           email: user.email,
-          userName: user.userName || null,
           fullName: user.fullName || null,
           profilePic: user.profilePic || null,
-          bio: user.bio || null,
           createdAt: user.createdAt.toISOString(),
           updatedAt: user.updatedAt.toISOString(),
         };
@@ -66,13 +64,11 @@ export default {
         const randomID = randomUUID();
         const email = `guest_${randomID}@example.com`;
         const fullName = `Guest User ${randomID}`;
-        const userName = `guest_${randomID}`;
 
         const guest = await prisma.user.create({
           data: {
             isGuest: true,
             email,
-            userName,
             fullName,
             role: "GUEST",
           },
@@ -82,10 +78,8 @@ export default {
           id: guest.id,
           role: guest.role,
           email: guest.email || "",
-          userName: guest.userName || null,
           fullName: guest.fullName || null,
           profilePic: guest.profilePic || null,
-          bio: guest.bio || null,
           createdAt: guest.createdAt.toISOString(),
           updatedAt: guest.updatedAt.toISOString(),
         };
