@@ -88,6 +88,7 @@ model User {
   userReports    UserReport[]
   isGuest        Boolean     @default(true)
   role           Role        @default(USER)
+  isVerified     Boolean     @default(false)
   createdAt      DateTime    @default(now())
   updatedAt      DateTime    @updatedAt
 }
@@ -134,7 +135,7 @@ model Session {
 model VerificationToken {
   id         String   @id @default(auto()) @map("_id") @db.ObjectId
   identifier String
-  token      String
+  token      String   @unique
   expires    DateTime
   
   @@unique([identifier, token])
@@ -209,3 +210,4 @@ model UpdateInfo {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 }
+

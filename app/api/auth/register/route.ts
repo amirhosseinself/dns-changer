@@ -2,7 +2,10 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { NextResponse } from "next/server";
+import crypto from "crypto";
+
 import { prisma } from "@/lib/prisma";
+import { sendVerificationEmail } from "@/lib/mailer";
 
 export async function POST(req: Request) {
   try {
@@ -36,8 +39,21 @@ export async function POST(req: Request) {
         fullName,
         role: "USER", // Enum value
         isGuest: false, // ⚡ important!
+        isVerified: false, // User needs to verify email
       },
     });
+
+    const verificationToken = crypto.randomBytes(32).toString("hex");
+
+    await prisma.verificationToken.create({
+      data: {
+        identifier: newUser.email,
+        token: verificationToken,
+        expires: new Date(Date.now() + 3600 * 1000),
+      }, // 1 hour expiry
+    });
+
+    await sendVerificationEmail(newUser.email, verificationToken);
 
     // ✅ Create JWT for mobile
     const token = jwt.sign(
