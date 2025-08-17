@@ -13,6 +13,8 @@ export const DnsSchema = z.object({
 // Query Schema
 export const DnsQuerySchema = z.object({
   type: z.nativeEnum(DnsType).optional(),
+  offset: z.string().optional().default("0"),
+  limit: z.string().optional().default("20"),
 });
 
 export type CreateDnsInput = z.infer<typeof DnsSchema>;

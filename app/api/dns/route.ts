@@ -30,19 +30,27 @@ export const GET = async (req: NextRequest) => {
 
   if (!parsed.success) {
     return NextResponse.json(
-      errorResponse([], "Invalid query parameters.", 3),
+      errorResponse([], "پارامترهای query نامعتبر هستند.", 3),
       { status: 400 }
     );
   }
 
+  const { type, offset = "0", limit = "20" } = parsed.data;
+
+  // ✅ تبدیل offset و limit به عدد
+  const skip = parseInt(offset as string, 10) || 0;
+  const take = parseInt(limit as string, 10) || 20;
+
   const where =
-    parsed.data.type && Object.values(DnsType).includes(parsed.data.type)
-      ? { type: parsed.data.type }
+    type && Object.values(DnsType).includes(type)
+      ? { type: type as DnsType }
       : {};
 
   const dnsList = await prisma.dnsRecord.findMany({
     where,
     orderBy: { createdAt: "desc" },
+    skip, // شروع از رکورد مشخص
+    take, // تعداد رکوردهای محدود
   });
 
   return NextResponse.json(
