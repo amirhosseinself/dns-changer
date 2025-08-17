@@ -6,7 +6,7 @@ export async function sendVerificationEmail(email: string, token: string) {
   const verificationUrl = `${process.env.NEXT_PUBLIC_APP_URL}/verify?token=${token}`;
 
   await resend.emails.send({
-    from: "no-reply@yourdomain.com", // یا دامنه تأیید شده
+    from: "noreply@gmail.com", // یا دامنه تأیید شده
     to: email,
     subject: "Verify your email",
     html: `
