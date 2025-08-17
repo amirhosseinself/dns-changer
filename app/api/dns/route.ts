@@ -37,21 +37,29 @@ export const GET = async (req: NextRequest) => {
 
   const { type, offset = "0", limit = "20" } = parsed.data;
 
-  // ✅ تبدیل offset و limit به عدد
-  const skip = parseInt(offset as string, 10) || 0;
-  const take = parseInt(limit as string, 10) || 20;
-
   const where =
     type && Object.values(DnsType).includes(type)
       ? { type: type as DnsType }
       : {};
 
-  const dnsList = await prisma.dnsRecord.findMany({
-    where,
-    orderBy: { createdAt: "desc" },
-    skip, // شروع از رکورد مشخص
-    take, // تعداد رکوردهای محدود
-  });
+  // بررسی اگر limit برابر "all" بود
+  let dnsList;
+  if (limit === "all") {
+    dnsList = await prisma.dnsRecord.findMany({
+      where,
+      orderBy: { createdAt: "desc" },
+    });
+  } else {
+    const skip = parseInt(offset as string, 10) || 0;
+    const take = parseInt(limit as string, 10) || 20;
+
+    dnsList = await prisma.dnsRecord.findMany({
+      where,
+      orderBy: { createdAt: "desc" },
+      skip,
+      take,
+    });
+  }
 
   return NextResponse.json(
     successResponse(dnsList, "DNS records fetched successfully."),
