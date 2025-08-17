@@ -13,7 +13,7 @@ export default function VerifyPage() {
           <div className="max-w-md w-full text-center p-10 bg-gradient-to-br from-gray-800 via-gray-900 to-black rounded-3xl shadow-2xl border border-gray-700">
             <AnimatePresence mode="wait">
               <motion.div
-                key={status}
+                key={"loading-s"}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
@@ -22,19 +22,6 @@ export default function VerifyPage() {
                 <p className={`font-bold text-lg sm:text-xl}`}>
                   در حال بررسی ایمیل...
                 </p>
-                {status === "success" && (
-                  <p className="mt-4 text-gray-400 text-sm">
-                    در حال انتقال به اپلیکیشن شما...
-                  </p>
-                )}
-                {status === "error" && (
-                  <button
-                    onClick={() => window.location.reload()}
-                    className="mt-6 px-6 py-2 bg-red-600 text-white rounded-full shadow hover:bg-red-700 transition"
-                  >
-                    تلاش مجدد
-                  </button>
-                )}
               </motion.div>
             </AnimatePresence>
           </div>
