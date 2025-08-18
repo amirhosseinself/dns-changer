@@ -1,15 +1,14 @@
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { successResponse, errorResponse } from "@/utils/apiResponses";
-import { auth } from "@/auth"; // Auth check
+import { getMobileUserId } from "@/lib/authMobile";
 
 // GET: Fetch user's tickets
-export const GET = async () => {
+export const GET = async (req: NextRequest) => {
   try {
-    const session = await auth();
+    const userId = await getMobileUserId(req);
 
-    // Check authentication
-    if (!session?.user?.id) {
+    if (!userId) {
       return NextResponse.json(errorResponse([], "Unauthorized", 401), {
         status: 401,
       });
@@ -17,7 +16,7 @@ export const GET = async () => {
 
     // Fetch user tickets
     const tickets = await prisma.userReport.findMany({
-      where: { userId: session.user.id },
+      where: { userId },
       orderBy: { createdAt: "desc" },
     });
 
@@ -37,10 +36,10 @@ export const GET = async () => {
 // POST: Create a new ticket
 export const POST = async (req: NextRequest) => {
   try {
-    const session = await auth();
+    const userId = await getMobileUserId(req);
 
     // Check authentication
-    if (!session?.user?.id) {
+    if (!userId) {
       return NextResponse.json(errorResponse([], "Unauthorized", 401), {
         status: 401,
       });
@@ -63,7 +62,7 @@ export const POST = async (req: NextRequest) => {
         subject,
         message,
         type,
-        userId: session.user.id,
+        userId,
       },
     });
 
