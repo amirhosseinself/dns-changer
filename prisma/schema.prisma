@@ -189,7 +189,6 @@ model AppLog {
 model UserDnsConnection {
   id              String    @id @default(auto()) @map("_id") @db.ObjectId
   userId          String?   @db.ObjectId
-  fcmToken        String?
   dnsLabel        String
   dnsIp1          String
   dnsIp2          String?

@@ -7,16 +7,10 @@ export const POST = async (req: NextRequest) => {
     const body = await req.json();
     console.log("[api/dns-usage/POST] Body:", body);
 
-    const { fcm_token, dns, timestamp, connection_type, network_info } = body;
+    const { dns, timestamp, connection_type, network_info } = body;
 
     // 🟢 Validation
-    if (
-      !fcm_token ||
-      !dns?.label ||
-      !dns?.ip1 ||
-      !timestamp ||
-      !connection_type
-    ) {
+    if (!dns?.label || !dns?.ip1 || !timestamp || !connection_type) {
       return NextResponse.json(
         errorResponse([], "Missing required fields.", 3),
         { status: 400 }
@@ -26,7 +20,6 @@ export const POST = async (req: NextRequest) => {
     // 🟢 Save to DB
     const newConnection = await prisma.userDnsConnection.create({
       data: {
-        fcmToken: fcm_token,
         dnsLabel: dns.label,
         dnsIp1: dns.ip1,
         dnsIp2: dns.ip2 || null,
