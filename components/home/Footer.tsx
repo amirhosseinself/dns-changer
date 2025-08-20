@@ -1,7 +1,7 @@
 // components/Footer.tsx
 "use client";
 
-import { Mail, Instagram, MessageSquare } from "lucide-react";
+import { Mail, Group, MessageSquare } from "lucide-react";
 import Link from "next/link";
 
 /**
@@ -27,10 +27,10 @@ export default function Footer() {
         <div className="flex flex-col gap-2">
           <div className="text-sm text-gray-300">پشتیبانی</div>
           <Link
-            href="mailto:support@firedns.example"
+            href="mailto:sina.nejadhoseini@gmail.com"
             className="flex items-center gap-2 text-gray-300"
           >
-            <Mail className="w-4 h-4" /> support@firedns.example
+            <Mail className="w-4 h-4" /> sina.nejadhoseini@gmail.com
           </Link>
         </div>
 
@@ -43,11 +43,11 @@ export default function Footer() {
             <MessageSquare className="w-5 h-5" />
           </Link>
           <Link
-            href="#"
-            aria-label="instagram"
+            href="https://t.me/fire_dns"
+            aria-label="Telegram"
             className="p-2 rounded-md bg-white/3"
           >
-            <Instagram className="w-5 h-5" />
+            <Group className="w-5 h-5" />
           </Link>
         </div>
       </div>
