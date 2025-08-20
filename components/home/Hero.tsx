@@ -35,7 +35,11 @@ export default function Hero() {
 
           <div className="mt-8 flex flex-wrap gap-4">
             <Link
-              href="#download"
+              href={
+                "https://github.com/isina-nej/FireDNS/releases/download/v2.0.0/FireDNS.apk"
+              }
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex items-center gap-3 px-5 py-3 rounded-full bg-gradient-to-r from-red-500 to-orange-500 text-black font-semibold shadow-lg hover:scale-[1.02] transition-transform"
             >
               <Smartphone className="w-5 h-5" />
@@ -47,13 +51,13 @@ export default function Hero() {
               className="inline-flex items-center gap-3 px-5 py-3 rounded-full border border-gray-700 text-white hover:bg-white/5 transition"
             >
               <Monitor className="w-5 h-5" />
-              دانلود ویندوز
+              دانلود ویندوز (به زودی)
             </Link>
           </div>
 
           <div className="mt-6 text-sm text-gray-500">
-            <span className="inline-block mr-2">⭐ 4.8</span>
-            <span>• بیش از 50K نصب فعال</span>
+            {/* <span className="inline-block mr-2">⭐ 4.8</span> */}
+            {/* <span>• بیش از 50K نصب فعال</span> */}
           </div>
         </motion.div>
 

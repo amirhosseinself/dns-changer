@@ -12,22 +12,8 @@ import { Download, Smartphone, Monitor } from "lucide-react";
 import Link from "next/link";
 
 export default function DownloadModal() {
-  // const downloadOptions = [
-  //   {
-  //     label: "نسخه اندروید",
-  //     subtext: "فایل APK مستقیم",
-  //     href: "/downloads/fire-dns-android.apk",
-  //     icon: Smartphone,
-  //     gradient: "from-green-400 via-emerald-500 to-green-600",
-  //   },
-  //   {
-  //     label: "نسخه ویندوز",
-  //     subtext: "فایل EXE نصبی",
-  //     href: "/downloads/fire-dns-windows.exe",
-  //     icon: Monitor,
-  //     gradient: "from-blue-400 via-indigo-500 to-blue-700",
-  //   },
-  // ];
+  const releaseUrl =
+    "https://github.com/isina-nej/FireDNS/releases/download/v2.0.0/FireDNS.apk";
 
   return (
     <Dialog>
@@ -50,7 +36,9 @@ export default function DownloadModal() {
         {/* Download Buttons */}
         <div className="mt-8 flex flex-col flex-wrap gap-4">
           <Link
-            href="#download"
+            href={releaseUrl}
+            target="_blank"
+            rel="noopener noreferrer"
             className="inline-flex items-center gap-3 px-5 py-3 rounded-full bg-gradient-to-r from-red-500 to-orange-500 text-white font-semibold shadow-lg hover:scale-[1.02] transition-transform"
           >
             <Smartphone className="w-5 h-5" />
@@ -58,11 +46,12 @@ export default function DownloadModal() {
           </Link>
 
           <Link
-            href="#download"
+            href={"#"}
+            rel="noopener noreferrer"
             className="inline-flex items-center gap-3 px-5 py-3 rounded-full border border-gray-700 text-white hover:bg-white/5 transition"
           >
             <Monitor className="w-5 h-5" />
-            دانلود ویندوز
+            دانلود ویندوز (به زودی)
           </Link>
         </div>
       </DialogContent>

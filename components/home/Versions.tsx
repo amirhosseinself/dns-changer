@@ -41,7 +41,7 @@ export default function Versions() {
               <h4 className="text-lg font-semibold">Android</h4>
               <p className="text-sm text-gray-300">نسخه موبایل - APK</p>
             </div>
-            <div className="text-red-400 font-bold">v1.3.2</div>
+            <div className="text-red-400 font-bold">v2.0.0</div>
           </div>
 
           <ul className="mt-6 space-y-3">
@@ -53,7 +53,11 @@ export default function Versions() {
           <div className="mt-6 flex gap-3">
             <Link
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-red-500 to-orange-500 text-black font-semibold"
-              href="/downloads/fire-dns-android.apk"
+              href={
+                "https://github.com/isina-nej/FireDNS/releases/download/v2.0.0/FireDNS.apk"
+              }
+              target="_blank"
+              rel="noopener noreferrer"
             >
               دانلود APK
             </Link>
@@ -73,7 +77,7 @@ export default function Versions() {
               <h4 className="text-lg font-semibold">Windows</h4>
               <p className="text-sm text-gray-300">نسخه دسکتاپ - Installer</p>
             </div>
-            <div className="text-red-400 font-bold">v1.3.2</div>
+            <div className="text-red-400 font-bold">v1.0.0</div>
           </div>
 
           <ul className="mt-6 space-y-3">
@@ -85,9 +89,9 @@ export default function Versions() {
           <div className="mt-6 flex gap-3">
             <Link
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-red-500 to-orange-500 text-black font-semibold"
-              href="/downloads/fire-dns-windows.exe"
+              href="#"
             >
-              دانلود ویندوز
+              دانلود ویندوز (به زودی)
             </Link>
 
             <Link
