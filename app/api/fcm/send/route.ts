@@ -1,4 +1,3 @@
-// app/api/fcm/send/route.ts
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { admin } from "@/lib/firebaseAdmin";
@@ -9,7 +8,7 @@ export const POST = async (req: NextRequest) => {
     const body = await req.json();
     console.log("[api/fcm/send] Body:", body);
 
-    const { title, body: message, userId, data } = body;
+    const { title, body: message, userId, data, all } = body;
 
     if (!title || !message) {
       return NextResponse.json(
@@ -20,18 +19,24 @@ export const POST = async (req: NextRequest) => {
 
     // دریافت توکن‌ها
     let tokens: string[] = [];
-    if (userId) {
+    if (all) {
+      // 📢 ارسال به همه کاربران
+      const allTokens = await prisma.fCMToken.findMany({
+        select: { token: true },
+      });
+      tokens = allTokens.map((t) => t.token);
+    } else if (userId) {
+      // 🎯 ارسال به کاربر خاص
       const userTokens = await prisma.fCMToken.findMany({
         where: { userId },
         select: { token: true },
       });
       tokens = userTokens.map((t) => t.token);
     } else {
-      // ارسال به همه کاربران
-      const allTokens = await prisma.fCMToken.findMany({
-        select: { token: true },
-      });
-      tokens = allTokens.map((t) => t.token);
+      return NextResponse.json(
+        errorResponse([], "Either userId or all=true must be provided.", 4),
+        { status: 400 }
+      );
     }
 
     if (tokens.length === 0) {
@@ -79,7 +84,9 @@ export const POST = async (req: NextRequest) => {
           successCount: response.successCount,
           failureCount: response.failureCount,
         },
-        "Notifications sent successfully."
+        all
+          ? "Notifications sent to ALL users successfully."
+          : "Notifications sent to the user successfully."
       ),
       { status: 200 }
     );

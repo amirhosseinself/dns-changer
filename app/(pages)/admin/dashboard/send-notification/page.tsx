@@ -57,7 +57,8 @@ const SendNotificationPage = () => {
       await axios.post("/api/fcm/send", {
         title,
         body,
-        userId,
+        userId: userId === "ALL" ? null : userId, // اگر ALL باشه userId = null
+        all: userId === "ALL", // فلگ برای API
       });
 
       toast.success("نوتیفیکیشن با موفقیت ارسال شد.");
@@ -85,6 +86,9 @@ const SendNotificationPage = () => {
             <SelectValue placeholder="انتخاب کاربر" />
           </SelectTrigger>
           <SelectContent>
+            {/* گزینه ارسال به همه */}
+            <SelectItem value="ALL">📢 همه کاربران</SelectItem>
+
             {users.length === 0 ? (
               <div className="text-sm text-muted-foreground px-4 py-2">
                 هیچ کاربری یافت نشد
