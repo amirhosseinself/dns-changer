@@ -16,9 +16,18 @@ export async function GET(req: Request) {
 
   const users = await prisma.user.findMany({
     where: {
-      OR: [
-        { fullName: { contains: search, mode: "insensitive" } },
-        { email: { contains: search, mode: "insensitive" } },
+      AND: [
+        {
+          OR: [
+            { fullName: { contains: search, mode: "insensitive" } },
+            { email: { contains: search, mode: "insensitive" } },
+          ],
+        },
+        {
+          fcmTokens: {
+            some: {},
+          },
+        },
       ],
     },
     select: {
@@ -27,7 +36,6 @@ export async function GET(req: Request) {
       email: true,
       profilePic: true,
     },
-    take: 20, // limit for performance
   });
 
   return NextResponse.json(users);
