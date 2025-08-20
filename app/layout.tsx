@@ -49,7 +49,7 @@ const montserrat = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "dns changer!",
+  title: "fire dns!",
   description: "created with love",
 };
 
