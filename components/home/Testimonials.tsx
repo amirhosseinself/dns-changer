@@ -25,7 +25,7 @@ export default function Testimonials() {
     <section className="container mx-auto py-20 px-6">
       <h3 className="text-2xl font-bold text-white mb-8">نظر کاربران</h3>
 
-      <div className="max-w-3xl mx-auto">
+      <div className="max-w-4xl mx-auto">
         <Swiper
           modules={[Autoplay, Pagination]}
           spaceBetween={20}
